@@ -1,14 +1,11 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next/types"
-import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { LanguageProvider } from "@/contexts/LanguageContext"
 import { AchievementProvider } from "@/contexts/AchievementContext"
 import { AuthProvider } from "@/contexts/AuthContext"
-
-const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "AgriScan - AI Crop Disease Identifier",
@@ -32,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className="font-sans">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
             <LanguageProvider>
