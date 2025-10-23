@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Next.js in Chrome (3000)",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "pnpm: dev (port 3000)"
+    },
+    {
+      "name": "Launch Next.js in Chrome (3001)",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:3001",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "pnpm: dev (port 3001)"
+    }
+  ]
+}

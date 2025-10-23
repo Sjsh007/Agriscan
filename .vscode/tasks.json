@@ -1,0 +1,71 @@
+{
+  "$schema": "https://schema.store/schemas/json/vscode/tasks.json",
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "kill ports 3000/3001",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-Command",
+        "$ports=3000,3001; foreach($port in $ports){ $conns=Get-NetTCPConnection -LocalPort $port -ErrorAction SilentlyContinue; if($conns){ $pids = $conns | Select-Object -ExpandProperty OwningProcess -Unique; foreach($pid in $pids){ try{ Stop-Process -Id $pid -Force -ErrorAction Stop } catch{} } } }"
+      ]
+    },
+    {
+      "label": "pnpm: dev (port 3000)",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["run", "dev:3000"],
+      "dependsOn": ["kill ports 3000/3001"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "owner": "nextjs",
+          "fileLocation": ["relative", "${workspaceFolder}"],
+          "pattern": {
+            "regexp": ".*",
+            "file": 1,
+            "location": 2,
+            "message": 0
+          },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "^>.*next dev",
+            "endsPattern": "^.*Ready in .*$"
+          }
+        }
+      ]
+    },
+    {
+      "label": "pnpm: dev (port 3001)",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["run", "dev:3001"],
+      "dependsOn": ["kill ports 3000/3001"],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "owner": "nextjs",
+          "fileLocation": ["relative", "${workspaceFolder}"],
+          "pattern": {
+            "regexp": ".*",
+            "file": 1,
+            "location": 2,
+            "message": 0
+          },
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "^>.*next dev",
+            "endsPattern": "^.*Ready in .*$"
+          }
+        }
+      ]
+    }
+  ]
+}
