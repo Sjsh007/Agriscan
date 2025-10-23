@@ -13,6 +13,15 @@ import Image from "next/image"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useAuth } from "@/contexts/AuthContext"
 
+// Simple hash function for demo purposes - uses browser's crypto API
+async function hashPassword(password: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(password)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+}
+
 export default function LoginPage() {
   const router = useRouter()
   const { login, isAuthenticated } = useAuth()
@@ -65,7 +74,7 @@ export default function LoginPage() {
     return password.length >= 8
   }
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoginError("")
 
@@ -82,6 +91,9 @@ export default function LoginPage() {
 
     setIsLoading(true)
 
+    // Hash the password and simulate login process with validation
+    const hashedPassword = await hashPassword(loginPassword)
+    
     // Simulate login process with validation
     setTimeout(() => {
       // Check if user exists in localStorage (simulated database)
@@ -107,7 +119,7 @@ export default function LoginPage() {
       }
 
       // Email exists, now check password
-      if (user.password !== loginPassword) {
+      if (user.password !== hashedPassword) {
         setLoginError("Incorrect password. Please try again.")
         setIsLoading(false)
         return
@@ -120,7 +132,7 @@ export default function LoginPage() {
     }, 1500)
   }
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setSignupError("")
 
@@ -152,6 +164,9 @@ export default function LoginPage() {
 
     setIsLoading(true)
 
+    // Hash password before storing
+    const hashedPassword = await hashPassword(signupPassword)
+
     // Simulate signup process
     setTimeout(() => {
       // Check if user already exists
@@ -166,12 +181,12 @@ export default function LoginPage() {
         return
       }
 
-      // Store new user (in a real app, this would hash the password)
+      // Store new user with hashed password
       const newUser = {
         name: signupName,
         email: signupEmail,
         phone: signupPhone,
-        password: signupPassword, // In production, this should be hashed
+        password: hashedPassword,
         createdAt: new Date().toISOString()
       }
       
